@@ -2,6 +2,11 @@
 
 A simple library to manage files in a static website where reusability and component functionality is needed.
 
+* ✅ Compile files to html using reusable compoenents.
+* ✅ Nest compoenents within components
+* ✅ Need to make a change? Update a component, recompile, and all files using it will update.
+* ✅ Watch option for live development
+
 ## Installation
 Global installation
 ```bash
