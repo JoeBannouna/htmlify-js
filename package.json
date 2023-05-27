@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "chokidar": "^3.5.3"
+  },
+  "name": "htmlify.js",
+  "version": "1.0.0",
+  "description": "Simple tool for maintaining files in a static website.",
+  "main": "htmlify.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "will be added"
+  },
+  "keywords": [
+    "static",
+    "html",
+    "htmlify",
+    "compiler",
+    "components",
+    "reusable",
+    "template",
+    "engine"
+  ],
+  "author": "Joe Bannouna",
+  "license": "ISC"
+}
