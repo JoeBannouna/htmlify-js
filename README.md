@@ -2,8 +2,6 @@
 
 A simple library to manage files in a static website where reusability and component functionality is needed.
 
-#
-
 ## Installation
 Global installation
 ```bash
@@ -15,22 +13,16 @@ Local installation
 npm install htmlify-js --save-dev
 ```
 
-#
-
 ## Usage
-
-#
 
 Create an `index.comp` file
 ```html
 @include "header"
 
-<h1>Htmlify makes static code resuable!</h1>
+  <h1>Htmlify makes static code resuable!</h1>
 
 @include "footer"
 ```
-
-#
 
 In the same directory, create `_header.comp` and  `_footer.comp` files (`_` is used to identify sub-components).
 
@@ -53,14 +45,10 @@ In the same directory, create `_header.comp` and  `_footer.comp` files (`_` is u
 </html>
 ```
 
-#
-
 Now to compile, run:
 ```bash
 htmlify-js
 ```
-
-#
 
 #### index.html (output)
 ```html
@@ -73,12 +61,12 @@ htmlify-js
   <title>Document</title>
 </head>
 <body>
+
   <h1>Htmlify makes static code resuable!</h1>
+
 </body>
 </html>
 ```
-
-#
 
 For more control, create an `htmlify.config.json` file in the root directory of where you run the compilation:
 #### htmlify.config.json (default settings)
