@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // SCRIPT FOR COMPILING STATIC HTML COMPONENTS TOGETHER
 // Will proably turn into an NPM package
 
@@ -13,8 +15,8 @@ const path = require('path');
 
 // Default settings
 let settings = {
-  targetDir: __dirname,
-  outDir: __dirname,
+  targetDir: process.cwd(),
+  outDir: process.cwd(),
   watch: false,
   inputExtension: 'comp',
   outputExtension: 'html',
@@ -26,11 +28,11 @@ function errorMsg(msg) {
 
 async function readSettingsFile() {
   try {
-    const data = await fs.readFile(path.join(__dirname, 'htmlify.config.json'));
+    const data = await fs.readFile(path.join(process.cwd(), 'htmlify.config.json'));
     settings = { ...settings, ...JSON.parse(data) };
 
-    if (settings.targetDir === '.') settings.targetDir = __dirname;
-    if (settings.outDir === '.') settings.outDir = __dirname;
+    if (settings.targetDir === '.') settings.targetDir = process.cwd();
+    if (settings.outDir === '.') settings.outDir = process.cwd();
   } catch (err) {
     console.log('\nCould not read config file. using default settings.\n');
   }
@@ -149,7 +151,7 @@ async function compile(input) {
 async function htmlify(initialDirFiles) {
   let targetDirFiles;
 
-  if (settings.targetDir != __dirname) {
+  if (settings.targetDir != process.cwd()) {
     targetDirFiles = await getFilesFromDir(settings.targetDir);
 
     if (!targetDirFiles) return;
@@ -167,15 +169,17 @@ function fileChange(initialDirFiles, path) {
     console.log('\n\n\n\n\n\n\n\n');
     console.log('HTMLify-ing...\n');
     htmlify(initialDirFiles);
+    console.log('Done');
   }
 }
 
 async function main() {
-  const initialDirFiles = await getFilesFromDir(__dirname);
+  const initialDirFiles = await getFilesFromDir(process.cwd());
 
   if (!initialDirFiles) return;
 
   if (initialDirFiles.includes('htmlify.config.json')) {
+    console.log('Found config file.');
     await readSettingsFile();
   }
 
@@ -192,6 +196,7 @@ async function main() {
     console.log('\n\n\n\n\n\n\n\n');
     console.log('HTMLify-ing...\n');
     htmlify(initialDirFiles);
+    console.log('Done');
 
     const watcher = chokidar.watch(settings.targetDir, { ignored: /^\./, persistent: true, awaitWriteFinish: true });
 
@@ -206,7 +211,9 @@ async function main() {
         watcher.close();
       });
   } else {
+    console.log('HTMLify-ing...\n');
     htmlify(initialDirFiles);
+    console.log('Done');
   }
 }
 

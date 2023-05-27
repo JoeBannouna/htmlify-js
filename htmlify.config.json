@@ -1,4 +1,7 @@
 {
   "targetDir": ".",
-  "watch": true
+  "outDir": ".",
+  "watch": false,
+  "inputExtension": "comp",
+  "outputExtension": "html"
 }

@@ -25,5 +25,8 @@
     "engine"
   ],
   "author": "Joe Bannouna",
-  "license": "ISC"
+  "license": "ISC",
+  "bin": {
+    "htmlify-js": "./bin/htmlify.js"
+  }
 }
