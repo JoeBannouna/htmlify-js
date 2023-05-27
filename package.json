@@ -3,7 +3,7 @@
     "chokidar": "^3.5.3"
   },
   "name": "htmlify-js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple tool for maintaining files in a static website.",
   "main": "./lib/htmlify",
   "devDependencies": {},

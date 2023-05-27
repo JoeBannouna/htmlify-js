@@ -22,6 +22,8 @@ let settings = {
   outputExtension: 'html',
 };
 
+const re = /@include "[\w\d' ''/''_''\-']+"/g;
+
 function errorMsg(msg) {
   console.log('\x1b[31m', '\n' + msg + '', '\x1b[0m');
 }
@@ -99,8 +101,6 @@ async function compileFile(file) {
 function getStatements(input) {
   const matches = [];
 
-  const re = /@include "[\w\d' ''/']+"/g;
-
   let match;
   while ((match = re.exec(input)) != null) {
     matches.push({
@@ -112,7 +112,7 @@ function getStatements(input) {
   return matches;
 }
 
-async function compile(input) {
+async function compile(input, prevPath = '') {
   let success = true;
 
   const statements = getStatements(input).map(statement => statement.statement);
@@ -123,11 +123,13 @@ async function compile(input) {
     const statement = statements[i];
     const filePath = statement.slice(10, statement.length - 1).split('/');
 
-    const filename = filePath.filter((_, i) => i !== filePath.length - 1).join('/') + '/_' + filePath[filePath.length - 1] + '.comp';
+    const fileDir = filePath.filter((_, i) => i !== filePath.length - 1).join('/') ;
+    const filename = prevPath + fileDir +'/_' + filePath[filePath.length - 1] + '.comp';
+    console.log(filename)
     const includeFileInput = await readCompFile(path.join(settings.targetDir, filename));
 
     if (includeFileInput) {
-      output[i] = await compile(includeFileInput);
+      output[i] = await compile(includeFileInput, prevPath + fileDir);
     } else {
       errorMsg(`Error: File "${filename}" note found.`);
       success = false;
@@ -138,7 +140,7 @@ async function compile(input) {
   if (!success) return false;
 
   let inputIndex = 0;
-  const newInp = await input.replace(/@include "[\w\d' ''/']+"/g, () => {
+  const newInp = await input.replace(re, () => {
     const statementOutput = output[inputIndex];
     inputIndex++;
 
