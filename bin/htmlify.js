@@ -78,7 +78,7 @@ async function compileFile(file) {
 
   let compiledOutput = await compile(input);
 
-  const outputFileName = file.slice(0, file.lastIndexOf('.comp'));
+  const outputFileName = file.slice(0, file.lastIndexOf('.' + settings.outputExtension));
 
   try {
     await fs.access(settings.outDir);
@@ -124,8 +124,7 @@ async function compile(input, prevPath = '') {
     const filePath = statement.slice(10, statement.length - 1).split('/');
 
     const fileDir = filePath.filter((_, i) => i !== filePath.length - 1).join('/') ;
-    const filename = prevPath + fileDir +'/_' + filePath[filePath.length - 1] + '.comp';
-    console.log(filename)
+    const filename = prevPath + fileDir +'/_' + filePath[filePath.length - 1] + '.' + settings.outputExtension;
     const includeFileInput = await readCompFile(path.join(settings.targetDir, filename));
 
     if (includeFileInput) {
@@ -165,12 +164,12 @@ async function htmlify(initialDirFiles) {
   await compileFiles(targetDirFiles);
 }
 
-function fileChange(initialDirFiles, path) {
+async function fileChange(initialDirFiles, path) {
   if (path.endsWith('.' + settings.inputExtension)) {
     console.log('\033[2J');
     console.log('\n\n\n\n\n\n\n\n');
     console.log('HTMLify-ing...\n');
-    htmlify(initialDirFiles);
+    await htmlify(initialDirFiles);
     console.log('Done');
   }
 }
@@ -197,7 +196,7 @@ async function main() {
     console.log('\033[2J');
     console.log('\n\n\n\n\n\n\n\n');
     console.log('HTMLify-ing...\n');
-    htmlify(initialDirFiles);
+    await htmlify(initialDirFiles);
     console.log('Done');
 
     const watcher = chokidar.watch(settings.targetDir, { ignored: /^\./, persistent: true, awaitWriteFinish: true });
@@ -214,7 +213,7 @@ async function main() {
       });
   } else {
     console.log('HTMLify-ing...\n');
-    htmlify(initialDirFiles);
+    await htmlify(initialDirFiles);
     console.log('Done');
   }
 }
