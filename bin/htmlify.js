@@ -199,7 +199,7 @@ async function main() {
     await htmlify(initialDirFiles);
     console.log('Done');
 
-    const watcher = chokidar.watch(settings.targetDir, { ignored: /^\./, persistent: true, awaitWriteFinish: true });
+    const watcher = chokidar.watch(settings.targetDir, { ignored: /^\./, persistent: true });
 
     watcher
       .on('change', function (path) {
