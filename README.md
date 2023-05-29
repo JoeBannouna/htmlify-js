@@ -52,7 +52,7 @@ In the same directory, create `_header.comp` and  `_footer.comp` files (`_` is u
 
 Now to compile, run:
 ```bash
-htmlify-js
+npx htmlify-js
 ```
 
 #### index.html (output)
