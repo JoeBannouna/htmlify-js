@@ -74,7 +74,7 @@ npx htmlify-js
 ```
 
 ### Environment variables
-Warning ⚠️: Do not environment variables that contain sensitive info. The variables will end up in the compiled HTML and anyone is able to view them. Only include variables that are meant to be seen, such as public keys etc..
+Warning ⚠️: Do not use environment variables that contain sensitive info! The variables will end up in the compiled HTML and anyone is able to view them. Only include variables that are meant to be seen, such as public keys etc..
 
 ### Used as follows:
 
