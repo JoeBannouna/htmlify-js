@@ -73,6 +73,28 @@ npx htmlify-js
 </html>
 ```
 
+### Environment variables
+Warning ⚠️: Do not environment variables that contain sensitive info. The variables will end up in the compiled HTML and anyone is able to view them. Only include variables that are meant to be seen, such as public keys etc..
+
+### Used as follows:
+
+#### .env
+```env
+MY_EXAMPLE_ENV_VAR="Welcome!"
+```
+
+### index.comp
+```html
+<div>@env "MY_EXAMPLE_ENV_VAR"</div>
+```
+
+### index.html (output)
+```html
+<div>Welcome!</div>
+```
+
+### Configuration
+
 For more control, create an `htmlify.config.json` file in the root directory of where you run the compilation:
 #### htmlify.config.json (default settings)
 ```json
@@ -81,7 +103,8 @@ For more control, create an `htmlify.config.json` file in the root directory of 
   "outDir": ".",
   "watch": false,
   "inputExtension": "comp",
-  "outputExtension": "html"
+  "outputExtension": "html",
+  "outputExtension": false
 }
 ```
 
@@ -90,3 +113,4 @@ For more control, create an `htmlify.config.json` file in the root directory of 
 - `outDir` directory where the compiled files will be at
 - `inputExtension` extension of files that htmlify-js will look for to compile (.comp by default)
 - `outputExtension` extension of files that htmlify-js will compile to (.html by default)
+- `envDir` directory of `.env` file to use environtment variables in template (false by default)

@@ -1,12 +1,12 @@
 {
   "dependencies": {
-    "chokidar": "^3.5.3"
+    "chokidar": "^3.5.3",
+    "dotenv": "^16.3.1"
   },
   "name": "htmlify-js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simple tool for maintaining files in a static website.",
   "main": "./lib/htmlify",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

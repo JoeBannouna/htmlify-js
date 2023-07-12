@@ -9,6 +9,8 @@
 // Looks for .comp files in the given directory
 
 const chokidar = require('chokidar');
+const dotenv = require('dotenv');
+
 const fs = require('fs/promises');
 // const { watch } = require('fs');
 const path = require('path');
@@ -20,12 +22,19 @@ let settings = {
   watch: false,
   inputExtension: 'comp',
   outputExtension: 'html',
+  envDir: false,
 };
 
-const re = /@include "[\w\d' ''/''_''\-']+"/g;
+const includeRe = /@include "[\w\d' ''/''_''\-']+"/g;
+const envRe = /@env "[\w\d' ''/''_''\-']+"/g;
 
 function errorMsg(msg) {
   console.log('\x1b[31m', '\n' + msg + '', '\x1b[0m');
+}
+
+function getEnv(env) {
+  if (settings.envDir) return process.env[env] ?? '';
+  return '';
 }
 
 async function readSettingsFile() {
@@ -98,7 +107,7 @@ async function compileFile(file) {
   }
 }
 
-function getStatements(input) {
+function getStatements(input, re) {
   const matches = [];
 
   let match;
@@ -112,23 +121,33 @@ function getStatements(input) {
   return matches;
 }
 
+function getIncludeStatements(input) {
+  return getStatements(input, includeRe);
+}
+
+function getEnvStatements(input) {
+  return getStatements(input, envRe);
+}
+
 async function compile(input, prevPath = '') {
   let success = true;
 
-  const statements = getStatements(input).map(statement => statement.statement);
+  const includeStatements = getIncludeStatements(input).map(statement => statement.statement);
+  const envStatements = getEnvStatements(input).map(statement => statement.statement);
 
-  const output = [];
+  const includeOutput = [];
+  const envOutput = [];
 
-  for (let i = 0; i < statements.length; i++) {
-    const statement = statements[i];
+  for (let i = 0; i < includeStatements.length; i++) {
+    const statement = includeStatements[i];
     const filePath = statement.slice(10, statement.length - 1).split('/');
 
-    const fileDir = filePath.filter((_, i) => i !== filePath.length - 1).join('/') ;
-    const filename = prevPath + fileDir +'/_' + filePath[filePath.length - 1] + '.' + settings.outputExtension;
+    const fileDir = filePath.filter((_, i) => i !== filePath.length - 1).join('/');
+    const filename = prevPath + fileDir + '/_' + filePath[filePath.length - 1] + '.' + settings.inputExtension;
     const includeFileInput = await readCompFile(path.join(settings.targetDir, filename));
 
     if (includeFileInput) {
-      output[i] = await compile(includeFileInput, prevPath + fileDir);
+      includeOutput[i] = await compile(includeFileInput, prevPath + fileDir);
     } else {
       errorMsg(`Error: File "${filename}" note found.`);
       success = false;
@@ -136,17 +155,32 @@ async function compile(input, prevPath = '') {
     }
   }
 
+  for (let i = 0; i < envStatements.length; i++) {
+    const statement = envStatements[i];
+    const envVar = statement.slice(6, statement.length - 1);
+    
+    envOutput[i] = getEnv(envVar);
+  }
+
   if (!success) return false;
 
-  let inputIndex = 0;
-  const newInp = await input.replace(re, () => {
-    const statementOutput = output[inputIndex];
-    inputIndex++;
+  let includeInputIndex = 0;
+  const newIncludeInp = await input.replace(includeRe, () => {
+    const statementOutput = includeOutput[includeInputIndex];
+    includeInputIndex++;
 
     return statementOutput;
   });
 
-  return newInp;
+  let envInputIndex = 0;
+  const newEnvInp = await newIncludeInp.replace(envRe, () => {
+    const statementOutput = envOutput[envInputIndex];
+    envInputIndex++;
+
+    return statementOutput;
+  });
+
+  return newEnvInp;
 }
 
 async function htmlify(initialDirFiles) {
@@ -183,6 +217,8 @@ async function main() {
     console.log('Found config file.');
     await readSettingsFile();
   }
+
+  if (settings.envDir) dotenv.config(path.join(process.cwd(), settings.envDir));
 
   if (settings.targetDir == settings.outDir && settings.inputExtension == settings.outputExtension) {
     errorMsg(

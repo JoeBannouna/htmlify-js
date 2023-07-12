@@ -3,5 +3,6 @@
   "outDir": ".",
   "watch": false,
   "inputExtension": "comp",
-  "outputExtension": "html"
+  "outputExtension": "html",
+  "envDir": false
 }

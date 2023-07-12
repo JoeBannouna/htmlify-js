@@ -1,0 +1,1 @@
+<div>@env "MY_EXAMPLE_ENV_VAR"</div>
