@@ -104,7 +104,7 @@ For more control, create an `htmlify.config.json` file in the root directory of 
   "watch": false,
   "inputExtension": "comp",
   "outputExtension": "html",
-  "outputExtension": false
+  "envDir": false
 }
 ```
 
